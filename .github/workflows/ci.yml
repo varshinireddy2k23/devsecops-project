@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  security:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,5 +20,28 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Run App Check
-      run: echo "App build successful"
+    # 🔍 SEMGREP (SAST)
+    - name: Run Semgrep
+      run: |
+        pip install semgrep
+        semgrep scan --config=auto
+
+    # 🔐 GITLEAKS (Secrets)
+    - name: Run Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+
+    # 📦 SNYK (Dependencies)
+    - name: Run Snyk
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    # 🐳 BUILD DOCKER IMAGE
+    - name: Build Docker Image
+      run: docker build -t devsecops-app .
+
+    # 🐳 TRIVY (Container Scan)
+    - name: Scan Docker Image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: devsecops-app
