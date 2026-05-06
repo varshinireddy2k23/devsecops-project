@@ -45,3 +45,7 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: devsecops-app
+            # 🏗️ CHECKOV (IaC SCAN)
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+        
