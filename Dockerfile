@@ -7,11 +7,14 @@ RUN npm install
 
 COPY . .
 
+# ✅ Install curl for healthcheck
+RUN apt-get update && apt-get install -y curl
+
 # ✅ Create non-root user
 RUN useradd -m appuser
 USER appuser
 
-# ✅ Add health check
+# ✅ Healthcheck
 HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
 
 EXPOSE 3000
