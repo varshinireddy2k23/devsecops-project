@@ -1,3 +1,9 @@
+# checkov:skip=CKV_AWS_18: Logging not required for demo
+# checkov:skip=CKV_AWS_144: Cross-region replication not required
+# checkov:skip=CKV2_AWS_61: Lifecycle config not required
+# checkov:skip=CKV2_AWS_62: Event notifications not required
+# checkov:skip=CKV_AWS_145: Using AES256 instead of KMS for demo
+
 provider "aws" {
   region = "us-east-1"
 }

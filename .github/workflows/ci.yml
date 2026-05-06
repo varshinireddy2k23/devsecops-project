@@ -1,8 +1,7 @@
-permissions:
-  contents: read
-
 name: DevSecOps CI Pipeline
 
+permissions:
+  contents: read
 
 on:
   push:
@@ -49,15 +48,30 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: devsecops-app
-     # 🛡️ INSTALL CONTFEST (FIXED)
-    - name: Install Conftest
-      run: |
-      curl -L https://github.com/open-policy-agent/conftest/releases/latest/download/conftest_Linux_x86_64.tar.gz -o conftest.tar.gz || true
-      tar -xzf conftest.tar.gz || true
-      sudo mv conftest /usr/local/bin || true
-          # 🛡️ POLICY CHECK (OPA)
+
+    # 🏗️ CHECKOV (IaC SCAN)
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        skip_check: CKV_AWS_18,CKV_AWS_144,CKV_AWS_145,CKV2_AWS_61,CKV2_AWS_62
+
+      # 🛡️ POLICY CHECK (BEST WAY)
     - name: Run Conftest
       uses: instrumenta/conftest-action@v0.3.0
       with:
-      files: .
+        files: .
       continue-on-error: true
+          
+    # 🚀 DEPLOYMENT STAGES (SIMULATED)
+
+    - name: Deploy to Dev
+      if: success()
+      run: echo "Deploying to Dev Environment..."
+
+    - name: Deploy to Staging
+      if: success()
+      run: echo "Deploying to Staging Environment..."
+
+    - name: Deploy to Production
+      if: success()
+      run: echo "Deploying to Production Environment..."
